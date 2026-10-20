@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DocQA</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <div class="brand"><span class="logo">◆</span> DocQA</div>
+  <div class="status" id="status"></div>
+</header>
+
+<main>
+  <aside>
+    <h2>Documents</h2>
+    <label class="drop" id="drop">
+      <input type="file" id="file" accept=".pdf,.txt,.md" multiple hidden>
+      <strong>Drop PDFs here</strong>
+      <span>or click to browse · PDF, TXT, MD</span>
+    </label>
+    <ul id="docs" class="docs"></ul>
+  </aside>
+
+  <section class="chat">
+    <div id="thread" class="thread">
+      <div class="empty" id="empty">
+        <h1>Ask your documents anything.</h1>
+        <p>Answers cite the exact page they came from. Click a citation to see the passage.</p>
+      </div>
+    </div>
+    <form id="ask" class="ask">
+      <input id="question" autocomplete="off" placeholder="e.g. What does VACUUM do?" required>
+      <button type="submit" id="send">Ask</button>
+    </form>
+  </section>
+</main>
+
+<template id="tpl-answer">
+  <article class="turn">
+    <div class="q"></div>
+    <div class="a"></div>
+    <div class="cites"></div>
+    <div class="meta"></div>
+  </article>
+</template>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
