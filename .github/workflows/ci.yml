@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: docqa
+          POSTGRES_PASSWORD: docqa
+          POSTGRES_DB: docqa_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U docqa" --health-interval 2s --health-retries 30
+    env:
+      DOCQA_TEST_DATABASE_URL: postgresql://docqa:docqa@localhost:5432/docqa_test
+      DOCQA_DATABASE_URL: postgresql://docqa:docqa@localhost:5432/docqa_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+      - run: ruff check docqa tests eval
+      - run: pytest -q
+      - name: Retrieval eval
+        run: python eval/run_eval.py --out eval-results.md && cat eval-results.md >> "$GITHUB_STEP_SUMMARY"
+
+  docker:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t docqa .
